@@ -50,7 +50,7 @@
 
 /* USER CODE BEGIN PV */
   uint16_t ADC_1, ADC_2;
-  uint16_t ADC_Value[100];
+  uint16_t ADC_Value[500];
   uint8_t i;
 /* USER CODE END PV */
 
@@ -66,6 +66,21 @@ int fputc(int ch,FILE *f)
 {
 	HAL_UART_Transmit(&huart1,(uint8_t *)&ch,1,0xFFFF);
 	return ch;
+}
+
+
+void lissajous_figures( uint16* xdata, uint16* ydata, uint16 x0,uint16 y0, uint16 N)
+{
+    SetBcolor(0x001F);
+    SetFcolor(0x001F);
+    GUI_RectangleFill(x0-150,y0-150,x0+150,y0+150);
+    SetFcolor(0xF800);
+
+    for (int i = 0;i < N-2; i++)
+    {
+        GUI_Line(xdata[i]/16 + x0, ydata[i]/16 + y0, xdata[i + 1]/16 + x0, ydata[i + 1]/16 + y0);
+    }
+
 }
 
 /* USER CODE END 0 */
@@ -111,6 +126,9 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  
+
+	
   while (1)
   {
     HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_1);
@@ -118,6 +136,8 @@ int main(void)
     printf("welcome to a new world! \r\n");
     SetTextValue(0,1,(uchar *)"hello,world!");
 
+
+	  
     for(i=0; i<100;)
      {
       ADC_1 = ADC_Value[i++];   
@@ -127,6 +147,8 @@ int main(void)
 //	  printf("ADC_Value is %d\r\n", ADC_Value[0]);
       printf("PC0 = %1.4f V\r\n", ADC_1*3.3f/4096);
       printf("PC1 = %1.4f V\r\n", ADC_2*3.3f/4096);
+      lissajous_figures(&ADC_Value[0],&ADC_Value[1],200,150,250);
+
 
     /* USER CODE END WHILE */
 

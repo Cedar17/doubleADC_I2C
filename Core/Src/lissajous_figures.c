@@ -9,7 +9,7 @@
 *  \param  y0    图形远点y坐标
 *  \param  N     采样点数
 */
-void lissajous_figures( uint16* xdata, uint16* ydata, uint16 x0,uint16, y0, uint16 N)
+void lissajous_figures( uint16* xdata, uint16* ydata, uint16 x0,uint16 y0, uint16 N)
 {
     SetBcolor(0x001F);
     SetFcolor(0x001F);
