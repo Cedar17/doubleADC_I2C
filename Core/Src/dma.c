@@ -50,6 +50,9 @@ void MX_DMA_Init(void)
 }
 
 /* USER CODE BEGIN 2 */
-
+void MX_DMA_DeInit(void)
+{
+  HAL_NVIC_DisableIRQ(DMA1_Channel1_IRQn);
+}
 /* USER CODE END 2 */
 

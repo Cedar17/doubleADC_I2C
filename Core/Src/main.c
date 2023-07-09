@@ -38,7 +38,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define ADC_BUFFER_LENGTH 128
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -50,7 +50,7 @@
 
 /* USER CODE BEGIN PV */
   uint16_t ADC_1, ADC_2;
-  uint16_t ADC_Value[1024];
+  uint16_t ADC_Value[ADC_BUFFER_LENGTH];
   uint8_t i;
 /* USER CODE END PV */
 
@@ -78,7 +78,7 @@ void lissajous_figures( uint16* xdata, uint16* ydata, uint16 x0,uint16 y0, uint1
 
     for (int i = 0;i < N-2; i++)
     {
-        GUI_Line(xdata[i]/16 + x0, ydata[i]/16 + y0, xdata[i + 1]/16 + x0, ydata[i + 1]/16 + y0);
+        GUI_Line(xdata[i]/16 + x0, ydata[i]/16 + y0, xdata[i + 2]/16 + x0, ydata[i + 2]/16 + y0);
     }
 
 }
@@ -120,7 +120,7 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   TPL0401A_Init();
-  HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&ADC_Value, 1024);
+  HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&ADC_Value, ADC_BUFFER_LENGTH);
 
   /* USER CODE END 2 */
 
@@ -138,18 +138,25 @@ int main(void)
 
 
 	  
-    for(i=0; i<1024;)
+    for(i=0; i<ADC_BUFFER_LENGTH;)
      {
       ADC_1 = ADC_Value[i++];   
       ADC_2 = ADC_Value[i++];
      }
       // printf("  double channel ADC test\r\n");
       printf("ADC_Value[0] is %d\r\n", ADC_Value[0]);
+      printf("ADC_Value[1] is %d\r\n", ADC_Value[1]);
       printf("PC0 = %1.4f V\r\n", ADC_1*3.3f/4096);
       printf("PC1 = %1.4f V\r\n", ADC_2*3.3f/4096);
-      // lissajous_figures(&ADC_Value[0],&ADC_Value[1],200,150,250);
-      // void HAL_NVIC_DisableIRQ(IRQn_Type IRQn)
-      // HAL_ADC_Stop_DMA()
+      // MX_DMA_DeInit();
+      // HAL_ADC_MspDeInit(&hadc1);
+      HAL_ADC_Stop_DMA(&hadc1);
+      // HAL_ADC_DeInit(&hadc1);
+      printf("ADC is stopped!\r\n\r\n");
+      lissajous_figures(&ADC_Value[0],&ADC_Value[1],200,150,ADC_BUFFER_LENGTH/2);
+      // 重新启动DMA传输
+      HAL_ADC_Start_DMA(&hadc1, (uint32_t *)&ADC_Value, ADC_BUFFER_LENGTH);
+      // void HAL_NVIC_DisableIRQ(IRQn_Type IRQn);
 
     /* USER CODE END WHILE */
 
