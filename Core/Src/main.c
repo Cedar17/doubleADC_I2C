@@ -38,7 +38,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define ADC_BUFFER_LENGTH 128
+#define ADC_BUFFER_LENGTH 1024
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -51,7 +51,7 @@
 /* USER CODE BEGIN PV */
   uint16_t ADC_1, ADC_2;
   uint16_t ADC_Value[ADC_BUFFER_LENGTH];
-  uint8_t i;
+  // uint8_t i;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -68,19 +68,22 @@ int fputc(int ch,FILE *f)
 	return ch;
 }
 
-
-void lissajous_figures( uint16* xdata, uint16* ydata, uint16 x0,uint16 y0, uint16 N)
+void lissajous_figures(uint16 *xdata, uint16 *ydata, uint16 x0, uint16 y0, uint16 N)
 {
-    SetBcolor(0x001F);
-    SetFcolor(0x001F);
-    GUI_RectangleFill(x0-150,y0-150,x0+150,y0+150);
-    SetFcolor(0xF800);
 
-    for (int i = 0;i < N-2; i++)
-    {
-        GUI_Line(xdata[i]/16 + x0, ydata[i]/16 + y0, xdata[i + 2]/16 + x0, ydata[i + 2]/16 + y0);
-    }
-
+  // for (int i = 0;i < N-2; i++)
+  // {
+  //   GUI_Line(xdata[i]/16 + x0, ydata[i]/16 + y0, xdata[i + 2]/16 + x0, ydata[i + 2]/16 + y0);
+  // }
+  for (int i = 0; i < N - 3; i += 2)
+  {
+    uint16 x_start = ADC_Value[i] / 16 + x0;
+    uint16 y_start = ADC_Value[i + 1] / 16 + y0;
+    // uint16 x_end = ADC_Value[i + 2] / 16 + x0;
+    // uint16 y_end = ADC_Value[i + 3] / 16 + y0;
+    // GUI_Line(x_start, y_start, x_end, y_end);
+    GUI_Dot(x_start, y_start);
+  }
 }
 
 /* USER CODE END 0 */
@@ -88,6 +91,7 @@ void lissajous_figures( uint16* xdata, uint16* ydata, uint16 x0,uint16 y0, uint1
 /**
   * @brief  The application entry point.
   * @retval int
+  * 需求：根据ADC_Value[ADC_BUFFER_LENGTH] 得到的一个数组，实现模拟xy模式双通道示波器画图。其中，x通道采样的值存放在ADC_Value[0],ADC_Value[2]这样的偶数下标位置，y通道采样得到数值存放在奇数下标位置。
   */
 int main(void)
 {
@@ -127,41 +131,48 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   
-
+  SetBcolor(0x0000);
+  SetFcolor(0x0000); // black
+  GUI_RectangleFill(50,200,50+300,200+300);
+  SetFcolor(0x07E0); // light green
 	
   while (1)
   {
+    // ADC_Value = malloc(ADC_BUFFER_LENGTH * sizeof(uint16_t));
+    HAL_ADC_Start_DMA(&hadc1, (uint32_t *)&ADC_Value, ADC_BUFFER_LENGTH);
     HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_1);
     // Set_TPL0401A_Value(0x7F);
-    printf("welcome to a new world! \r\n");
-    SetTextValue(0,1,(uchar *)"hello,world!");
-
-
-	  
-    for(i=0; i<ADC_BUFFER_LENGTH;)
-     {
-      ADC_1 = ADC_Value[i++];   
-      ADC_2 = ADC_Value[i++];
-     }
-      // printf("  double channel ADC test\r\n");
-      printf("ADC_Value[0] is %d\r\n", ADC_Value[0]);
-      printf("ADC_Value[1] is %d\r\n", ADC_Value[1]);
-      printf("PC0 = %1.4f V\r\n", ADC_1*3.3f/4096);
-      printf("PC1 = %1.4f V\r\n", ADC_2*3.3f/4096);
-      // MX_DMA_DeInit();
-      // HAL_ADC_MspDeInit(&hadc1);
-      HAL_ADC_Stop_DMA(&hadc1);
-      // HAL_ADC_DeInit(&hadc1);
-      printf("ADC is stopped!\r\n\r\n");
-      lissajous_figures(&ADC_Value[0],&ADC_Value[1],200,150,ADC_BUFFER_LENGTH/2);
-      // 重新启动DMA传输
-      HAL_ADC_Start_DMA(&hadc1, (uint32_t *)&ADC_Value, ADC_BUFFER_LENGTH);
-      // void HAL_NVIC_DisableIRQ(IRQn_Type IRQn);
+    // printf("welcome to a new world! \r\n");
+    // SetTextValue(0,1,(uchar *)"hello,world!");
+    // SetTextInt32(0,5,ADC_Value[0],0,4);
+    for (int i = 0; i < ADC_BUFFER_LENGTH;)
+    {
+        ADC_1 = ADC_Value[i++];
+        ADC_2 = ADC_Value[i++];
+    }
+    // printf("  double channel ADC test\r\n");
+    // printf("ADC_Value[0] is %d\r\n", ADC_Value[0]);
+    // printf("ADC_Value[1] is %d\r\n", ADC_Value[1]);
+    // printf("PC0 = %1.4f V\r\n", ADC_1*3.3f/4096);
+    // printf("PC1 = %1.4f V\r\n", ADC_2*3.3f/4096);
+    // MX_DMA_DeInit();
+    // HAL_ADC_MspDeInit(&hadc1);
+    HAL_ADC_Stop_DMA(&hadc1);
+    // HAL_ADC_DeInit(&hadc1);
+    printf("ADC is stopped!\r\n\r\n");
+    for (int i = 0; i < ADC_BUFFER_LENGTH; i += 2)
+    {
+      printf("ADC_Value[%4d] is %4d, ADC_Value[%4d] is %4d\r\n", i, ADC_Value[i], i + 1, ADC_Value[i + 1]);
+    }
+    // lissajous_figures(&ADC_Value[0],&ADC_Value[1],50,200,ADC_BUFFER_LENGTH);
+    
+    // free(ADC_Value);
+    // void HAL_NVIC_DisableIRQ(IRQn_Type IRQn);
 
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  HAL_Delay(1000);
+	  // HAL_Delay(1000);
   }
   /* USER CODE END 3 */
 }
@@ -205,7 +216,7 @@ void SystemClock_Config(void)
     Error_Handler();
   }
   PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADC;
-  PeriphClkInit.AdcClockSelection = RCC_ADCPCLK2_DIV6;
+  PeriphClkInit.AdcClockSelection = RCC_ADCPCLK2_DIV8;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
     Error_Handler();
