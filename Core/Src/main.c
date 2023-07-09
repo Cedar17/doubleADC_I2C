@@ -62,6 +62,31 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+/** 按键按下标置宏
+* 按键按下为高电平，设置 KEY_ON=1， KEY_OFF=0
+* 若按键按下为低电平，把宏设置成KEY_ON=0 ，KEY_OFF=1 即可
+*/
+#define KEY_ON  1
+#define KEY_OFF 0
+
+/**
+* @brief   检测是否有按键按下
+* @param  GPIOx:具体的端口, x可以是（A...G）
+* @param  GPIO_PIN:具体的端口位， 可以是GPIO_PIN_x（x可以是0...15）
+* @retval  按键的状态
+*     @arg KEY_ON:按键按下
+*     @arg KEY_OFF:按键没按下
+*/
+uint8_t Key_Scan(GPIO_TypeDef* GPIOx,uint16_t GPIO_Pin)
+{
+    /*检测是否有按键按下 */
+    if (HAL_GPIO_ReadPin(GPIOx,GPIO_Pin) == KEY_ON ) {
+        /*等待按键释放 */
+        while (HAL_GPIO_ReadPin(GPIOx,GPIO_Pin) == KEY_ON);
+        return  KEY_ON;
+    } else
+        return KEY_OFF;
+}
 int fputc(int ch,FILE *f)
 {
 	HAL_UART_Transmit(&huart1,(uint8_t *)&ch,1,0xFFFF);
@@ -138,6 +163,14 @@ int main(void)
 	
   while (1)
   {
+    if (Key_Scan(GPIOA, GPIO_PIN_0) == KEY_ON)
+        {
+            HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_5);
+        }
+        else if (Key_Scan(GPIOC, GPIO_PIN_13) == KEY_ON)
+        {
+            HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_0);
+        }
     // ADC_Value = malloc(ADC_BUFFER_LENGTH * sizeof(uint16_t));
     HAL_ADC_Start_DMA(&hadc1, (uint32_t *)&ADC_Value, ADC_BUFFER_LENGTH);
     HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_1);
@@ -159,12 +192,12 @@ int main(void)
     // HAL_ADC_MspDeInit(&hadc1);
     HAL_ADC_Stop_DMA(&hadc1);
     // HAL_ADC_DeInit(&hadc1);
-    printf("ADC is stopped!\r\n\r\n");
-    for (int i = 0; i < ADC_BUFFER_LENGTH; i += 2)
-    {
-      printf("ADC_Value[%4d] is %4d, ADC_Value[%4d] is %4d\r\n", i, ADC_Value[i], i + 1, ADC_Value[i + 1]);
-    }
-    lissajous_figures(&ADC_Value[0],&ADC_Value[1],50,200,ADC_BUFFER_LENGTH);
+    // printf("ADC is stopped!\r\n\r\n");
+    // for (int i = 0; i < ADC_BUFFER_LENGTH; i += 2)
+    // {
+    //   printf("ADC_Value[%4d] is %4d, ADC_Value[%4d] is %4d\r\n", i, ADC_Value[i], i + 1, ADC_Value[i + 1]);
+    // }
+    // lissajous_figures(&ADC_Value[0],&ADC_Value[1],50,200,ADC_BUFFER_LENGTH);
     
     // free(ADC_Value);
     // void HAL_NVIC_DisableIRQ(IRQn_Type IRQn);
