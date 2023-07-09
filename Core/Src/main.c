@@ -164,7 +164,7 @@ int main(void)
     {
       printf("ADC_Value[%4d] is %4d, ADC_Value[%4d] is %4d\r\n", i, ADC_Value[i], i + 1, ADC_Value[i + 1]);
     }
-    // lissajous_figures(&ADC_Value[0],&ADC_Value[1],50,200,ADC_BUFFER_LENGTH);
+    lissajous_figures(&ADC_Value[0],&ADC_Value[1],50,200,ADC_BUFFER_LENGTH);
     
     // free(ADC_Value);
     // void HAL_NVIC_DisableIRQ(IRQn_Type IRQn);
