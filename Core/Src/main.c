@@ -50,7 +50,7 @@
 
 /* USER CODE BEGIN PV */
   uint16_t ADC_1, ADC_2;
-  uint16_t ADC_Value[500];
+  uint16_t ADC_Value[1024];
   uint8_t i;
 /* USER CODE END PV */
 
@@ -120,7 +120,7 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   TPL0401A_Init();
-  HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&ADC_Value, 100);
+  HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&ADC_Value, 1024);
 
   /* USER CODE END 2 */
 
@@ -138,17 +138,18 @@ int main(void)
 
 
 	  
-    for(i=0; i<100;)
+    for(i=0; i<1024;)
      {
       ADC_1 = ADC_Value[i++];   
       ADC_2 = ADC_Value[i++];
      }
-      printf("  double channel ADC test\r\n");
-//	  printf("ADC_Value is %d\r\n", ADC_Value[0]);
+      // printf("  double channel ADC test\r\n");
+      printf("ADC_Value[0] is %d\r\n", ADC_Value[0]);
       printf("PC0 = %1.4f V\r\n", ADC_1*3.3f/4096);
       printf("PC1 = %1.4f V\r\n", ADC_2*3.3f/4096);
-      lissajous_figures(&ADC_Value[0],&ADC_Value[1],200,150,250);
-
+      // lissajous_figures(&ADC_Value[0],&ADC_Value[1],200,150,250);
+      // void HAL_NVIC_DisableIRQ(IRQn_Type IRQn)
+      // HAL_ADC_Stop_DMA()
 
     /* USER CODE END WHILE */
 
