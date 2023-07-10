@@ -49,6 +49,9 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+  uint8_t Counter_Freq = 1; // 4 pins
+  uint8_t Selecter_Voltage = 1; // 3 pins
+  uint8_t Output_Mode = 0; // 0 for 4 pins, 1 for 3 pins
   uint16_t ADC_1, ADC_2;
   uint16_t ADC_Value[ADC_BUFFER_LENGTH];
   // uint8_t i;
@@ -163,17 +166,71 @@ int main(void)
 	
   while (1)
   {
-    if (Key_Scan(GPIOA, GPIO_PIN_0) == KEY_ON)
-        {
-            HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_5);
-        }
-        else if (Key_Scan(GPIOC, GPIO_PIN_13) == KEY_ON)
-        {
-            HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_0);
-        }
+    if ((Key_Scan(GPIOA, GPIO_PIN_0) == KEY_ON) && (Output_Mode == 0))
+    {
+      Counter_Freq = (Counter_Freq + 1) % 5;
+    }
+    if ((Key_Scan(GPIOA, GPIO_PIN_0) == KEY_ON) && (Output_Mode == 1))
+    {
+      Selecter_Voltage = (Selecter_Voltage + 1) % 3;
+    }
+    if (Key_Scan(GPIOC, GPIO_PIN_13) == KEY_ON) // Key2, Set Mode
+    {
+      Output_Mode = 1 - Output_Mode;
+    }
+    switch (Counter_Freq)
+    {
+    case 1:
+      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, 0);
+      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, 0);
+      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, 0);
+      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_11, 0);
+      break;
+    case 2:
+      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, 0);
+      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, 0);
+      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, 0);
+      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_11, 0);
+      break;
+    case 3:
+      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, 0);
+      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, 0);
+      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, 0);
+      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_11, 0);
+      break;
+    case 4:
+      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, 0);
+      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, 0);
+      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, 0);
+      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_11, 0);
+      break;
+    case 5:
+      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, 0);
+      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, 0);
+      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, 0);
+      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_11, 0); 
+      break;  
+    }
+    switch (Selecter_Voltage)
+    {
+    case 1:
+      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0);
+      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 0);
+      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_12, 0);
+      break;
+    case 2:
+      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0);
+      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 0);
+      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_12, 0);
+      break;
+    case 3:
+      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0);
+      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 0);
+      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_12, 0);
+    }
     // ADC_Value = malloc(ADC_BUFFER_LENGTH * sizeof(uint16_t));
     HAL_ADC_Start_DMA(&hadc1, (uint32_t *)&ADC_Value, ADC_BUFFER_LENGTH);
-    HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_1);
+    HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_1); // LED_Blue
     // Set_TPL0401A_Value(0x7F);
     // printf("welcome to a new world! \r\n");
     // SetTextValue(0,1,(uchar *)"hello,world!");
@@ -197,7 +254,7 @@ int main(void)
     // {
     //   printf("ADC_Value[%4d] is %4d, ADC_Value[%4d] is %4d\r\n", i, ADC_Value[i], i + 1, ADC_Value[i + 1]);
     // }
-    // lissajous_figures(&ADC_Value[0],&ADC_Value[1],50,200,ADC_BUFFER_LENGTH);
+    lissajous_figures(&ADC_Value[0],&ADC_Value[1],50,200,ADC_BUFFER_LENGTH);
     
     // free(ADC_Value);
     // void HAL_NVIC_DisableIRQ(IRQn_Type IRQn);
