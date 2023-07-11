@@ -142,6 +142,36 @@ void Lissajous_Figures(uint16 *xdata, uint16 *ydata, uint16 x0, uint16 y0, uint1
     GUI_Dot(x_start, y_start);
   }
 }
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+  /* EXTI line interrupt detected */
+  if (GPIO_Pin == GPIO_PIN_0)
+  {
+    HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_1);
+    if (Output_Mode == 0)
+    {
+        Counter_Freq = (Counter_Freq) % 5 + 1;
+        printf("Counter_Freq = %d, Selecter_Voltage = %d, Output_Mode = %d\r\n", Counter_Freq, Selecter_Voltage,
+               Output_Mode); // 0 for Freq, 1 for Voltage
+    }
+    else if (Output_Mode == 1)
+    {
+        Selecter_Voltage = (Selecter_Voltage) % 3 + 1;
+        Res = 0x1A;
+        Res_High = 0x7F;
+        Res_Low = 0x00;
+        printf("Counter_Freq = %d, Selecter_Voltage = %d, Output_Mode = %d\r\n", Counter_Freq, Selecter_Voltage,
+               Output_Mode); // 0 for Freq, 1 for Voltage
+    }
+  }
+  if (GPIO_Pin == GPIO_PIN_13)
+  {
+    HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_0);
+    Output_Mode = 1 - Output_Mode;
+    printf("Counter_Freq = %d, Selecter_Voltage = %d, Output_Mode = %d\r\n", Counter_Freq, Selecter_Voltage,
+           Output_Mode); // 0 for Freq, 1 for Voltage
+  }
+}
 
 /* USER CODE END 0 */
 
@@ -192,28 +222,28 @@ int main(void)
 	
   while (1)
   {
-    if (Key_Scan(GPIOA, GPIO_PIN_0) == KEY_ON)
-    {
-      if (Output_Mode == 1){
-        Counter_Freq = (Counter_Freq) % 5 + 1;
-        printf("Counter_Freq = %d, Selecter_Voltage = %d, Output_Mode = %d\r\n", Counter_Freq, Selecter_Voltage, Output_Mode); // 0 for Freq, 1 for Voltage
-      }
-      else if(Output_Mode == 0)
-      {
-        Selecter_Voltage = (Selecter_Voltage)% 3 + 1;
-        Res = 0x1A;
-        Res_High = 0x7F;
-        Res_Low = 0x00;
-        printf("Counter_Freq = %d, Selecter_Voltage = %d, Output_Mode = %d\r\n", Counter_Freq, Selecter_Voltage, Output_Mode); // 0 for Freq, 1 for Voltage
-      }
-    }
+    // if (Key_Scan(GPIOA, GPIO_PIN_0) == KEY_ON)
+    // {
+    //   if (Output_Mode == 1){
+    //     Counter_Freq = (Counter_Freq) % 5 + 1;
+    //     printf("Counter_Freq = %d, Selecter_Voltage = %d, Output_Mode = %d\r\n", Counter_Freq, Selecter_Voltage, Output_Mode); // 0 for Freq, 1 for Voltage
+    //   }
+    //   else if(Output_Mode == 0)
+    //   {
+    //     Selecter_Voltage = (Selecter_Voltage)% 3 + 1;
+    //     Res = 0x1A;
+    //     Res_High = 0x7F;
+    //     Res_Low = 0x00;
+    //     printf("Counter_Freq = %d, Selecter_Voltage = %d, Output_Mode = %d\r\n", Counter_Freq, Selecter_Voltage, Output_Mode); // 0 for Freq, 1 for Voltage
+    //   }
+    // }
     
     
-    if (Key_Scan(GPIOC, GPIO_PIN_13) == KEY_ON) // Key2, Set Mode
-    {
-      Output_Mode = 1 - Output_Mode;
-      printf("Counter_Freq = %d, Selecter_Voltage = %d, Output_Mode = %d\r\n", Counter_Freq, Selecter_Voltage, Output_Mode); // 0 for Freq, 1 for Voltage
-    }
+    // if (Key_Scan(GPIOC, GPIO_PIN_13) == KEY_ON) // Key2, Set Mode
+    // {
+    //   Output_Mode = 1 - Output_Mode;
+    //   printf("Counter_Freq = %d, Selecter_Voltage = %d, Output_Mode = %d\r\n", Counter_Freq, Selecter_Voltage, Output_Mode); // 0 for Freq, 1 for Voltage
+    // }
     switch (Counter_Freq)
     {
     case 1:
