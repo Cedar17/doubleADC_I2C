@@ -66,7 +66,7 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h)(0x64A7785D)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h)(0x64A7785D)
 I (../Core/Inc/usart.h)(0x64A8DDE6)
 I (../Core/Inc/main.h)(0x64A8DDE6)
-F (../Core/Src/main.c)(0x64AA7C3D)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ..\Drivers\hmi_driver-I.\RTE\_doubleADC_I2C-ID:\Keil\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include-ID:\Keil\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.0\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_HD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xE-o doubleadc_i2c\main.o --omf_browse doubleadc_i2c\main.crf --depend doubleadc_i2c\main.d)
+F (../Core/Src/main.c)(0x64ACD15B)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ..\Drivers\hmi_driver-I.\RTE\_doubleADC_I2C-ID:\Keil\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include-ID:\Keil\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.0\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_HD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xE-o doubleadc_i2c\main.o --omf_browse doubleadc_i2c\main.crf --depend doubleadc_i2c\main.d)
 I (../Core/Inc/main.h)(0x64A8DDE6)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x64A7785D)
 I (../Core/Inc/stm32f1xx_hal_conf.h)(0x64A8DDE6)
@@ -104,7 +104,7 @@ I (../Core/Inc/gpio.h)(0x64A8DDE5)
 I (D:\Keil_v5\ARM\ARM_Compiler_5.06u7\include\stdio.h)(0x5E8E3CC2)
 I (..\Drivers\hmi_driver\hmi_driver.h)(0x64A8BD76)
 I (..\Drivers\hmi_driver\hmi_user_uart.h)(0x64A666EE)
-F (../Core/Src/gpio.c)(0x64AA7B22)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ..\Drivers\hmi_driver-I.\RTE\_doubleADC_I2C-ID:\Keil\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include-ID:\Keil\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.0\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_HD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xE-o doubleadc_i2c\gpio.o --omf_browse doubleadc_i2c\gpio.crf --depend doubleadc_i2c\gpio.d)
+F (../Core/Src/gpio.c)(0x64ACD099)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ..\Drivers\hmi_driver-I.\RTE\_doubleADC_I2C-ID:\Keil\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include-ID:\Keil\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.0\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_HD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xE-o doubleadc_i2c\gpio.o --omf_browse doubleadc_i2c\gpio.crf --depend doubleadc_i2c\gpio.d)
 I (../Core/Inc/gpio.h)(0x64A8DDE5)
 I (../Core/Inc/main.h)(0x64A8DDE6)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x64A7785D)
@@ -135,7 +135,7 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h)(0x64A7785D)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_i2c.h)(0x64A7785D)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h)(0x64A7785D)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h)(0x64A7785D)
-F (../Core/Src/adc.c)(0x64AA0FAC)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ..\Drivers\hmi_driver-I.\RTE\_doubleADC_I2C-ID:\Keil\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include-ID:\Keil\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.0\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_HD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xE-o doubleadc_i2c\adc.o --omf_browse doubleadc_i2c\adc.crf --depend doubleadc_i2c\adc.d)
+F (../Core/Src/adc.c)(0x64ACAEB9)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ..\Drivers\hmi_driver-I.\RTE\_doubleADC_I2C-ID:\Keil\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include-ID:\Keil\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.0\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_HD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xE-o doubleadc_i2c\adc.o --omf_browse doubleadc_i2c\adc.crf --depend doubleadc_i2c\adc.d)
 I (../Core/Inc/adc.h)(0x64A8DDE6)
 I (../Core/Inc/main.h)(0x64A8DDE6)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x64A7785D)
