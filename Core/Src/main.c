@@ -52,8 +52,11 @@
   uint8_t Counter_Freq = 1; // 4 pins
   uint8_t Selecter_Voltage = 1; // 3 pins
   uint8_t Output_Mode = 0; // 0 for 4 pins, 1 for 3 pins
-  uint16_t ADC_1, ADC_2;
   uint16_t ADC_Value[ADC_BUFFER_LENGTH];
+  uchar Res = 0x1A;
+  uchar Res_High = 0x7F;
+  uchar Res_Low = 0x00;
+  // uint16_t ADC_1, ADC_2;
   // uint8_t i;
 /* USER CODE END PV */
 
@@ -96,7 +99,33 @@ int fputc(int ch,FILE *f)
 	return ch;
 }
 
-void lissajous_figures(uint16 *xdata, uint16 *ydata, uint16 x0, uint16 y0, uint16 N)
+int Set_Signal_Value(int set_value, int ADC_value, uchar *address, uchar *address_high, uchar *address_low)
+{
+    int set_value_mid = set_value * 40960 / 33;
+    int set_value_min = set_value_mid - 100;
+    int set_value_max = set_value_mid + 100;
+    int address_mid = (*address_high + * address_low)/2;
+    if ((ADC_value > set_value_max)&&((*address_high) > (*address_low)))
+    {
+        (*address_high) = *address - 1;
+        (*address) = ((*address_low) + (*address))/2;
+        printf("too high");
+    }
+    else if ((ADC_value < set_value_min)&&((*address_high) > (*address_low)))
+    {
+        (*address_low) = *address + 1;
+        (*address) = ((*address_high)+(*address))/2;
+        printf("too low");
+    }
+    else
+    {
+        (*address) = (*address_low);
+        printf("just");
+        return 0;
+    }
+}
+
+void Lissajous_Figures(uint16 *xdata, uint16 *ydata, uint16 x0, uint16 y0, uint16 N)
 {
 
   // for (int i = 0;i < N-2; i++)
@@ -152,13 +181,10 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   TPL0401A_Init();
-  HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&ADC_Value, ADC_BUFFER_LENGTH);
-
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  
   SetBcolor(0x0000);
   SetFcolor(0x0000); // black
   GUI_RectangleFill(50,200,50+300,200+300);
@@ -166,80 +192,70 @@ int main(void)
 	
   while (1)
   {
-    if ((Key_Scan(GPIOA, GPIO_PIN_0) == KEY_ON) && (Output_Mode == 0))
-    {
-      Counter_Freq = (Counter_Freq + 1) % 5;
-    }
-    if ((Key_Scan(GPIOA, GPIO_PIN_0) == KEY_ON) && (Output_Mode == 1))
-    {
-      Selecter_Voltage = (Selecter_Voltage + 1) % 3;
-    }
-    if (Key_Scan(GPIOC, GPIO_PIN_13) == KEY_ON) // Key2, Set Mode
-    {
-      Output_Mode = 1 - Output_Mode;
-    }
-    switch (Counter_Freq)
-    {
-    case 1:
-      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, 0);
-      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, 0);
-      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, 0);
-      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_11, 0);
-      break;
-    case 2:
-      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, 0);
-      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, 0);
-      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, 0);
-      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_11, 0);
-      break;
-    case 3:
-      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, 0);
-      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, 0);
-      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, 0);
-      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_11, 0);
-      break;
-    case 4:
-      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, 0);
-      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, 0);
-      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, 0);
-      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_11, 0);
-      break;
-    case 5:
-      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, 0);
-      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, 0);
-      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, 0);
-      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_11, 0); 
-      break;  
-    }
-    switch (Selecter_Voltage)
-    {
-    case 1:
-      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0);
-      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 0);
-      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_12, 0);
-      break;
-    case 2:
-      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0);
-      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 0);
-      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_12, 0);
-      break;
-    case 3:
-      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0);
-      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 0);
-      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_12, 0);
-    }
+    // if ((Key_Scan(GPIOA, GPIO_PIN_0) == KEY_ON) && (Output_Mode == 0))
+    // {
+    //   Counter_Freq = (Counter_Freq + 1) % 5;
+    // }
+    // if ((Key_Scan(GPIOA, GPIO_PIN_0) == KEY_ON) && (Output_Mode == 1))
+    // {
+    //   Selecter_Voltage = (Selecter_Voltage + 1) % 3;
+    // }
+    // if (Key_Scan(GPIOC, GPIO_PIN_13) == KEY_ON) // Key2, Set Mode
+    // {
+    //   Output_Mode = 1 - Output_Mode;
+    // }
+    // switch (Counter_Freq)
+    // {
+    // case 1:
+    //   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, 0);
+    //   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, 0);
+    //   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, 0);
+    //   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_11, 0);
+    //   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, 1);
+    //   break;
+    // case 2:
+    //   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, 0);
+    //   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, 1);
+    //   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, 1);
+    //   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_11, 1);
+    //   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, 0);
+    //   break;
+    // case 3:
+    //   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, 1);
+    //   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, 0);
+    //   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, 1);
+    //   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_11, 1);
+    //   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, 0);
+    //   break;
+    // case 4:
+    //   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, 0);
+    //   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, 0);
+    //   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, 1);
+    //   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_11, 1);
+    //   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, 0);
+    //   break;
+    // case 5:
+    //   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, 1);
+    //   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, 1);
+    //   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, 0);
+    //   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_11, 1); 
+    //   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, 0);
+    //   break;  
+    // }
+
     // ADC_Value = malloc(ADC_BUFFER_LENGTH * sizeof(uint16_t));
+    ADC_ConversionStop_Disable(&hadc1);
     HAL_ADC_Start_DMA(&hadc1, (uint32_t *)&ADC_Value, ADC_BUFFER_LENGTH);
+    HAL_Delay(10);
     HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_1); // LED_Blue
-    // Set_TPL0401A_Value(0x7F);
     // printf("welcome to a new world! \r\n");
     // SetTextValue(0,1,(uchar *)"hello,world!");
     // SetTextInt32(0,5,ADC_Value[0],0,4);
-    for (int i = 0; i < ADC_BUFFER_LENGTH;)
-    {
-        ADC_1 = ADC_Value[i++];
-        ADC_2 = ADC_Value[i++];
-    }
+    // for (int i = 0; i < ADC_BUFFER_LENGTH;)
+    // {
+    //     ADC_1 = ADC_Value[i++];
+    //     ADC_2 = ADC_Value[i++];
+    // }
     // printf("  double channel ADC test\r\n");
     // printf("ADC_Value[0] is %d\r\n", ADC_Value[0]);
     // printf("ADC_Value[1] is %d\r\n", ADC_Value[1]);
@@ -247,14 +263,46 @@ int main(void)
     // printf("PC1 = %1.4f V\r\n", ADC_2*3.3f/4096);
     // MX_DMA_DeInit();
     // HAL_ADC_MspDeInit(&hadc1);
-    HAL_ADC_Stop_DMA(&hadc1);
+    
+    // HAL_ADC_Stop_DMA(&hadc1);
+    
+
     // HAL_ADC_DeInit(&hadc1);
-    // printf("ADC is stopped!\r\n\r\n");
-    // for (int i = 0; i < ADC_BUFFER_LENGTH; i += 2)
-    // {
-    //   printf("ADC_Value[%4d] is %4d, ADC_Value[%4d] is %4d\r\n", i, ADC_Value[i], i + 1, ADC_Value[i + 1]);
-    // }
-    lissajous_figures(&ADC_Value[0],&ADC_Value[1],50,200,ADC_BUFFER_LENGTH);
+    printf("ADC is stopped!\r\n");
+    int PC0_Max = ADC_Value[0], PC1_Max = 0;
+    int PC0_Min = ADC_Value[0], PC1_Min = 4095;
+    int PC0_Vpp = 0;
+    int PC1_Vpp = 0;
+
+    printf("Res = %2x, Res_Low = %2x, Res_High = %2x\r\n", Res, Res_Low, Res_High);
+    for (int i = 0; i < ADC_BUFFER_LENGTH; i += 2)
+    {
+    // printf("ADC_Value[%4d]=%4d,ADC_Value[%4d]=%4d.    PC0_Max=%4d,PC1_Max=%4d,    PC0_Min=%4d,PC1_Min=%4d.    PC0_Vpp=%4d,PC1_Vpp=%4d.   Res=%2x\r\n", i, ADC_Value[i], i + 1, ADC_Value[i + 1],PC0_Max,PC1_Max,PC0_Min,PC1_Min,PC0_Vpp,PC1_Vpp,Res);
+      if (ADC_Value[i]> PC0_Max)
+      {
+        PC0_Max = ADC_Value[i];
+      }
+      if (ADC_Value[i+1]> PC1_Max)
+      {
+        PC1_Max = ADC_Value[i+1];
+      }
+      if (ADC_Value[i]< PC0_Min)
+      {
+        PC0_Min = ADC_Value[i];
+      }
+      if (ADC_Value[i+1]< PC1_Min)
+      {
+        PC1_Min = ADC_Value[i+1];
+      }
+      PC0_Vpp = PC0_Max - PC0_Min;
+      PC1_Vpp = PC1_Max - PC1_Min;
+    }
+    HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_0); // LED_Green
+
+    Set_Signal_Value(Selecter_Voltage, PC1_Vpp, &Res, &Res_High, &Res_Low);
+    Set_TPL0401A_Value(Res);
+
+    // Lissajous_Figures(&ADC_Value[0],&ADC_Value[1],50,200,ADC_BUFFER_LENGTH);
     
     // free(ADC_Value);
     // void HAL_NVIC_DisableIRQ(IRQn_Type IRQn);
